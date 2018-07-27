@@ -12,3 +12,4 @@ version：mysql-5.7.17-win32.zip
 5、原始密码登录 mysql -u root -p  (原始密码在mysql\data\XXX.err文件中)
 6、重置密码ALTER USER 'root'@'localhost' IDENTIFIED BY 'newpassword';
 7、本次测试mysql  C:\WorkDay\mysql-5.7.17  root/123456
+8、C:\WorkDay\Code\Python\Flask\FlaskModles\blog\blog\setting.py 将配置文件加入到环境变量path中
