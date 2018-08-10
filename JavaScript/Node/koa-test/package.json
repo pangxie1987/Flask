@@ -1,0 +1,27 @@
+{
+    "name": "app-test",
+    "version": "1.0.0",
+    "description": "use mocha to test web",
+    "main": "start.js",
+    "scripts": {
+        "test": "mocha"
+    },
+    "keywords": [
+        "mocha",
+        "web test"
+    ],
+    "author": "Michael Liao",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/michaelliao/learn-javascript.git"
+    },
+    "dependencies": {
+        "mz": "2.4.0"
+    },
+    "devDependencies": {
+        "mocha": "3.0.2",
+        "supertest": "3.0.0",
+        "koa": "2.0.0"
+    }
+}
