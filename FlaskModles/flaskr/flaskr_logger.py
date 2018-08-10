@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 '''
-邮件和日志记录
+flask的邮件和日志记录
 '''
 
 import logging
@@ -8,7 +8,7 @@ from flask import Flask, render_template
 from logging.handlers import SMTPHandler
 from threading import Thread
 
-
+# 使用SMTPHandler发送邮件
 toaddr = ['m18516292278@163.com']
 fromaddr = 'm18516292278@163.com'
 from_server = ('smtp.163.com', 25)
@@ -79,7 +79,7 @@ def send_mail():
     thr.start()
     
 if __name__ == '__main__':
-    # 创建日志
+    # 使用logging模块创建日志
     handler = logging.FileHandler('flaskr.log', mode='a+')
     handler.setLevel(logging.INFO)
     logging_format = logging.Formatter(

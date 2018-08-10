@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 '''
-flaskr主程序
+flaskr主程序，数据库使用sqlite3
 '''
 from __future__ import with_statement
 import sqlite3
@@ -86,19 +86,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    
-    # import logging
-    # from logging.handlers import SMTPHandler
-    # ADMINS = ['m18516292278@163.com']
-    # sender = 'm18516292278@163.com'
-    # import logging
-    # logger = logging.getLogger()
-    # # ('smtp.163.com', 25)
-    # mail_handler = SMTPHandler(('smtp.163.com', 25), sender, 
-    #             ADMINS, 'YourApplication Failed!',
-    #             credentials=('m18516292278', 'lpb123456'))
-    # mail_handler.setLevel(logging.ERROR)
-    # #if not app.debug:
-    # logger.addHandler(mail_handler)
-    # print('Mail Error')
     app.run('0.0.0.0')

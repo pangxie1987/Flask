@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+'''
+设计数据库-用户表，采用python的orm框架flask-sqlalchemy实现表的创建、增删改查功能
+'''
 
 from blog import db
 from flask_login import UserMixin

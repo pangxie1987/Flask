@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+'''
+项目初始化文件
+'''
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -7,9 +10,13 @@ from flask_login import LoginManager
 # 创建项目对象
 app = Flask(__name__)
 
+# # 实例化文件夹，instance_relative_config=True 则从../instance/setting.py中加载配置
+# app = Flask(__name__, instance_relative_config=True)
+
 
 # 加载配置文件内容
 app.config.from_object('blog.setting') #模块下的setting文件名，不需要加.py后缀
+app.config.from_pyfile('setting.py')    #从py文件中导入配置
 app.config.from_envvar('FLASKR_SETTINGS') #环境变量，指向配置文件setting的路径
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:123456@localhost:3306/blog_db?charset=utf8'
 
