@@ -5,18 +5,43 @@ from flask_bootstrap import Bootstrap
 from flask import render_template
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate, MigrateCommand
+from flask_mail import Mail
+from config import config
 
-app = Flask(__name__)
-app.config.from_object('config')
-bootstrap = Bootstrap(app)
-# 初始化数据库
-db = SQLAlchemy(app)
-# 时间戳
-moment = Moment(app)
-# 数据库迁移框架
-migrate = Migrate(app, db)
-manager.add_command('db', MigrateCommand)
+# app = Flask(__name__)
+# app.config.from_object('config')
+# bootstrap = Bootstrap(app)
+# # 初始化数据库
+# db = SQLAlchemy(app)
+# # 时间戳
+# moment = Moment(app)
 
-from app import views
+# # 邮件初始化
+# mail = Mail(app)
+# from app import views
 
+db = SQLAlchemy()
+bootstrap = Bootstrap()
+mail = Mail()
+moment = Moment()
+
+
+def create_app(config_name):
+    '''
+    工厂函数
+    '''
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
+
+    bootstrap.init_app(app)
+    mail.init_app(app)
+    moment.init_app(app)
+    db.init_app(app)
+
+    # 注册蓝本
+    from .main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
+    
+    # 附加路由和自定义的错误页面
+    return app

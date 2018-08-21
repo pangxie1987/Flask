@@ -5,10 +5,11 @@ insert datas to tables
 add data
 commit
 '''
-
+import os
 from app import db
 from app.models import User, Role
-
+from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO
+from migrate.versioning import api
 
 def create_db():
     '''
@@ -32,7 +33,14 @@ def create_db():
 
 
 if __name__ == '__main__':
+
     create_db()
+    if not os.path.exists(SQLALCHEMY_MIGRATE_REPO):
+        api.create(SQLALCHEMY_MIGRATE_REPO, 'database repository')
+        api.version_control(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
+    else:
+        api.version_control(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO, api.version(SQLALCHEMY_MIGRATE_REPO))
+
     #--------------查询--------------
     users_all = User.query.all()    #查询所有users表中的数据
     users_id = User.query.filter_by(id=1).all() #根据users中的id过滤筛选

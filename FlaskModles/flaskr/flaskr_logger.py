@@ -37,7 +37,7 @@ app = Flask(__name__)
 
 app.config['MAIL_SERVER'] = 'smtp.163.com'
 app.config['MAIL_PORT'] = 465       #163邮箱使用SSL协议  端口为465
-app.config['MAIL_USE_SSL'] = True
+# app.config['MAIL_USE_SSL'] = True
 # app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'm18516292278@163.com'
 app.config['MAIL_PASSWORD'] = 'lpb123456'
