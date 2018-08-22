@@ -46,6 +46,7 @@ class Config:
     MAIL_DEFAULT_SENDER = 'm18516292278@163.com'  # 填邮箱，默认发送者
     recipients = ['m18516292278@163.com', 'm18516292278@163.com']
     RECEVIERS = ['m18516292278@163.com', 'm18516292278@163.com']
+    FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
 
     @staticmethod
     def init_app(app):

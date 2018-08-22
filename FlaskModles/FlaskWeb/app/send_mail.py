@@ -7,6 +7,7 @@ from . import mail
 from flask_mail import Message
 from threading import Thread
 from flask import current_app
+from flask import render_template
 # from flask import Flask
 # from flask import request
 # from flask_script import Manager, Shell
@@ -55,20 +56,36 @@ def send_async_email(app, msg):
     with app.app_context():
         mail.send(msg)
 
-def s_Mail(subject, recipients, attachfile):
+# def s_Mail(subject, recipients, attachfile):
+#     '''
+#     封装函数发送邮件，使用多线程方式
+#     '''
+#     app = current_app._get_current_object()
+#     msg = Message(subject=subject,
+#                   recipients=recipients)
+#     msg.body = 'sended by flask-email'
+#     msg.html = '<b>测试Flask发送邮件<b>'
+#     with app.open_resource(attachfile) as fp:
+#         msg.attach(attachfile, 'run/py', fp.read())
+#     thread = Thread(target=send_async_email, args=[app, msg])
+#     thread.start()
+#     print('Email Send Sucess!')
+
+def s_Mail(to, subject, template, attachfile='send_mail.py', **kwargs):
     '''
     封装函数发送邮件，使用多线程方式
     '''
     app = current_app._get_current_object()
-    msg = Message(subject=subject,
-                  recipients=recipients)
-    msg.body = 'sended by flask-email'
-    msg.html = '<b>测试Flask发送邮件<b>'
+    msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + ' ' + subject,
+            sender=app.config['MAIL_DEFAULT_SENDER'], recipients=[to])
+    msg.body = render_template(template + '.txt', **kwargs)
+    msg.html = render_template(template + '.html', **kwargs)
     with app.open_resource(attachfile) as fp:
         msg.attach(attachfile, 'run/py', fp.read())
-    thread = Thread(target=send_async_email, args=[app, msg])
-    thread.start()
+    thr = Thread(target=send_async_email, args=[app, msg])
+    thr.start()
     print('Email Send Sucess!')
+    return thr
     
 
 # if __name__ == '__main__':
