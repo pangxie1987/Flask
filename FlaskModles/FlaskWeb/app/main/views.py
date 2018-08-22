@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+'''
+视图文件
+'''
 
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, current_app
@@ -8,6 +11,7 @@ from .. import db
 from ..models import User
 from ..send_mail import s_Mail
 from ..logger import WrLog
+from flask_login import login_required
 
 wlog = WrLog()
 @main.route('/index', methods=['GET','POST'])
@@ -53,10 +57,16 @@ def user(name):
 def home():
     return redirect(url_for('.index'))
 
-@main.errorhandler(404)
-def page_not_fount(e):
-    return render_template('404.html'), 404
+# @main.errorhandler(404)
+# def page_not_fount(e):
+#     return render_template('404.html'), 404
 
-@main.errorhandler(500)
-def internal_server_error(e):
-    return render_template('500.html'), 500
+# @main.errorhandler(500)
+# def internal_server_error(e):
+#     return render_template('500.html'), 500
+
+# # 保护路由
+# @app.route('/secret')
+# @login_required
+# def secret():
+#     return 'Only authenticated users are allowed!'

@@ -13,6 +13,14 @@
     {% else %}
     <p>Please to meet you !</p>
     {% endif %}
+    <h2>
+        Login Sucess, hello,
+        {% if current_user.is_authenticated %}
+            {{ current_user.username}}
+        {% else %}
+            Stranger
+        {% endif %}
+    </h2>
 </div>
 {{ wtf.quick_form(form) }}
 {% endblock %}

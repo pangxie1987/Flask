@@ -1,3 +1,8 @@
+# -*- coding:utf-8 -*-
+'''
+Web表单
+'''
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
