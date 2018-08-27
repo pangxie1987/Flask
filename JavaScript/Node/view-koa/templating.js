@@ -16,7 +16,7 @@ function createEnv(path, opts){
             });
         if (opts.filters) {
             for (var f in opts.filters) {
-                env.addFilter(f, opts.filters(f));
+                env.addFilter(f, opts.filters[f]);
             }
         }
         return env;
