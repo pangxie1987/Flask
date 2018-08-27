@@ -16,10 +16,7 @@ python manage.py
 1、reset password报错
 
 
-数据库创建
-python manage.py shell
-from app import db
-db.create_all()
+
 
 创建数据库升级脚本
 python manage.py db init
@@ -27,3 +24,8 @@ python manage.py db init
 python manage.py db upgrade
 降级
 python manage.py db downgrade
+
+创建表
+python manage.py shell
+from app import db
+db.create_all()

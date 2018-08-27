@@ -48,6 +48,8 @@ class Config:
     RECEVIERS = ['m18516292278@163.com', 'm18516292278@163.com']
     FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
     FLASK_ADMIN = 'FLASK'
+    FLASKY_POSTS_PER_PAGE = 6
+    FLASKY_FOLLOWERS_PER_PAGE = 50
 
     @staticmethod
     def init_app(app):
