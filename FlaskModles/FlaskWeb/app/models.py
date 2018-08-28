@@ -13,14 +13,14 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app, request, url_for
 from . import db
 from datetime import datetime
-
+from app.exceptions import ValidationError
 
 class Permission:
-    FOLLOW = 0x01
-    COMMENT = 0x02
-    WRITE_ARTICLES = 0x04
-    MODERATE_COMMENTS = 0x08
-    ADMINISTER = 0x80
+    FOLLOW = 1
+    COMMENT = 2
+    WRITE_ARTICLES = 4
+    MODERATE_COMMENTS = 8
+    ADMINISTER = 16
 
 class Comment(db.Model):
     __tablename__ = 'comments'
@@ -101,11 +101,31 @@ class Post(db.Model):
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-        'h1', 'h2', 'h3', 'p']
+            'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+            'h1', 'h2', 'h3', 'p']
         target.body_html = bleach.linkify(bleach.clean(
-        markdown(value, output_format='html'),
-        tags=allowed_tags, strip=True))
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True))
+
+    def to_json(self):
+        json_post = {
+            'url': url_for('api.get_post', id=self.id),
+            'body': self.body,
+            'body_html': self.body_html,
+            'timestamp': self.timestamp,
+            'author_url': url_for('api.get_user', id=self.author_id),
+            'comments_url': url_for('api.get_post_comments', id=self.id),
+            'comment_count': self.comments.count()
+        }
+        return json_post
+
+    @staticmethod
+    def from_json(json_post):
+        body = json_post.get('body')
+        if body is None or body == '':
+            raise ValidationError('post does have a body')
+        return Post(body=body)
+
 db.event.listen(Post.body, 'set', Post.on_changed_body)
 
 class Follow(db.Model):
@@ -142,7 +162,7 @@ class User(UserMixin, db.Model):
                             backref=db.backref('followed', lazy='joined'),
                             lazy='dynamic',
                             cascade='all, delete-orphan')
-    comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -154,9 +174,8 @@ class User(UserMixin, db.Model):
             if self.email is not None and self.avatar_hash is None:
                 self.avatar_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
 
-    def can(self, permissions):
-        return self.role is not None and \
-            (self.role.permissions & permissions) == permissions
+    def can(self, perm):
+        return self.role is not None and self.role.has_permission(perm)
     
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)
@@ -164,6 +183,7 @@ class User(UserMixin, db.Model):
     def ping(self):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
+        db.session.commit()
 
     @property
     def password(self):
@@ -190,6 +210,7 @@ class User(UserMixin, db.Model):
             return False
         self.confirmed = True
         db.session.add(self)
+        db.session.commit()
         return True
 
     def generate_reset_token(self, expiration=3600):
@@ -208,6 +229,7 @@ class User(UserMixin, db.Model):
             return False
         user.password = new_password
         db.session.add(user)
+        db.session.commit()
         return True
     
 
@@ -226,11 +248,12 @@ class User(UserMixin, db.Model):
         new_email = data.get('new_email')
         if new_email is None:
             return False
-        if self.query.filter_by(emial=new_email).first() is not None:
+        if self.query.filter_by(email=new_email).first() is not None:
             return False
         self.email = new_email
         self.avatar_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
         db.session.add(self)
+        db.session.commit()
         return True
 
     @staticmethod
@@ -276,11 +299,13 @@ class User(UserMixin, db.Model):
         if not self.is_following(user):
             f = Follow(follower=self, follwed=user)
             db.session.add()
+            db.session.commit()
     
     def unfollow(self, user):
         f = self.followed.filter_by(followed_id=user.id).first()
         if f:
             db.session.delete(f)
+            db.session.commit()
 
     def is_following(self, user):
         return self.followed.filter_by(followed_id=user.id).first() is not None
@@ -290,7 +315,7 @@ class User(UserMixin, db.Model):
 
     @property
     def followed_posts(self):
-        return Post.query.join(Follow, Follow.followed_id==Post.author_id).filter_by(Follow.follower_id==self.id)
+        return Post.query.join(Follow, Follow.followed_id==Post.author_id).filter(Follow.follower_id==self.id)
 
     def __repr__(self):
         return '<User %r>' % self.username
