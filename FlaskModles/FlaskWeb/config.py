@@ -50,6 +50,7 @@ class Config:
     FLASK_ADMIN = 'FLASK'
     FLASKY_POSTS_PER_PAGE = 6
     FLASKY_FOLLOWERS_PER_PAGE = 50
+    WTF_CSRF_ENABLED = False
 
     @staticmethod
     def init_app(app):
