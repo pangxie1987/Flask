@@ -40,6 +40,17 @@ wlog = WrLog()
 #     return render_template("index.html", form = form, current_time=datetime.utcnow(), name=session.get('name'),
 #         known = session.get('known', False))
 
+@main.route('/shutdown')
+def server_shutdown():
+    '关闭服务器的路由'
+    if not current_app.testing:
+        abort(404)
+    shutdown = request.environ.get('werkzeug.server.shutdown')
+    if not shutdown:
+        abort(500)
+    shutdown()
+    return 'Shutting down...'
+
 @main.route('/', methods=['GET','POST'])
 def index():
     form = PostForm()

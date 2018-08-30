@@ -50,7 +50,7 @@ class Config:
     FLASK_ADMIN = 'FLASK'
     FLASKY_POSTS_PER_PAGE = 6
     FLASKY_FOLLOWERS_PER_PAGE = 50
-    WTF_CSRF_ENABLED = False
+    
 
     @staticmethod
     def init_app(app):
@@ -65,6 +65,7 @@ class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app-test.sqlite')    #数据库存储文件
+    WTF_CSRF_ENABLED = False
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
