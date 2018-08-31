@@ -2,6 +2,7 @@
 '''
 使用selenium运行测试的框架
 '''
+import re
 import time
 import unittest
 import threading
@@ -14,10 +15,10 @@ class SeleniumTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # 启动浏览器
-        options = webdriver.ChromeOption()
-        options.add_argument('headless')
+        # options = webdriver.ChromeOption()
+        # options.add_argument('headless')
         try:
-            cls.client = webdriver.Chrome(chrome_options=options)
+            cls.client = webdriver.Chrome('C:/Python/chromedriver')
         except:
             pass
         # 如果无法启动浏览器  则跳过这些测试
@@ -53,23 +54,43 @@ class SeleniumTestCase(unittest.TestCase):
             cls.server_thread.start()
             time.sleep(1)
 
-        @classmethod
-        def tearDownClass(cls):
-            if cls.client:
-                # 关闭Flask服务器和浏览器
-                cls.client.get('http://localhost:5000/shutdown')
-                cls.client.close()
+    @classmethod
+    def tearDownClass(cls):
+        if cls.client:
+            # 关闭Flask服务器和浏览器
+            cls.client.get('http://localhost:5000/shutdown')
+            cls.client.close()
 
-                # 销毁数据库
-                db.drop_all()
-                db.session.remove()
+            # 销毁数据库
+            db.drop_all()
+            db.session.remove()
 
-                # 删除程序上下文
-                cls.app_context.pop()
+            # 删除程序上下文
+            cls.app_context.pop()
 
-        def setUp(self):
-            if not self.client:
-                self.skipTest('Web browser not avalable')
+    def setUp(self):
+        if not self.client:
+            self.skipTest('Web browser not avalable')
 
-        def tearDown(self):
-            pass
+    def tearDown(self):
+        pass
+
+    def test_admin_home_page(self):
+        '进入首页'
+        self.client.get('http://localhost:5000/')
+        self.assertTrue(re.search('Hello,\s+Stranger!', self.client.page_source))
+
+        #进入登录页面
+        self.client.find_element_by_link_text('Login').click()
+        self.assertTrue('<h1>Login</h1>' in self.client.page_source)
+
+        #登录
+        self.client.find_element_by_name('email').send_keys('773779347@qq.com')
+        self.client.find_element_by_name('password').send_keys('8')
+        self.client.find_element_by_name('submit').click()
+        time.sleep(2)
+        self.assertTrue(re.search('hello,\s+Pitt_liu!', self.client.page_source))
+
+        #进入用户个人资料页面
+        self.client.find_element_by_link_text('Profile').click()
+        self.assertTrue('<h1>john</h1>' in self.client.page_source)
