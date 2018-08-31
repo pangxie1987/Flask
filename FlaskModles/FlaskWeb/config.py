@@ -29,7 +29,7 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')    #数据库�
 #         'sqlite:///' + os.path.join(basedir, 'app.sqlite')   #数据库存储文件
 class Config:
     CSRF_ENABLED = True # 激活 跨站点请求伪造 保护
-    SECRET_KEY = 'first_flask_web' # 加密令牌
+    SECRET_KEY = 'reset' # 加密令牌
     # 数据库配置   
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -70,6 +70,28 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app-test.sqlite')    #数据库存储文件
+
+    @classmethod
+    def init_app(cls, app):
+        Config.init_app(app)
+
+        #把错误通过电子邮件发送给管理员
+        import logging
+        from logging.handlers import SMTPHandler
+        credentials = None
+        secure = None
+        if getattr(cls, 'MAIL_USERNAME', None) is not None:
+            credentials = (cls.MAIL_USERNAME, cls.MAIL_PASSWORD)
+            if getattr(cls, 'MAIL_USE_TLS', None):
+                secure = ()
+        mail_handler = SMTPHandler(
+                        mailhost = (cls.MAIL_SERVER, cls.MAIL_PORT),
+                        fromaddr = cls.MAIL_DEFAULT_SENDER,
+                        toaddrs = [cls.FLASK_ADMIN],
+                        subject = cls.FLASKY_MAIL_SUBJECT_PREFIX + 'Application Error',
+                        secure=secure)
+        mail_handler.setLevel(logging.ERROR)
+        app.logger.addHandler(mail_handler)
 
 config = {
     'development': DevelopmentConfig,

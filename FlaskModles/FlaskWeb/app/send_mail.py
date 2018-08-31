@@ -56,21 +56,6 @@ def send_async_email(app, msg):
     with app.app_context():
         mail.send(msg)
 
-# def s_Mail(subject, recipients, attachfile):
-#     '''
-#     封装函数发送邮件，使用多线程方式
-#     '''
-#     app = current_app._get_current_object()
-#     msg = Message(subject=subject,
-#                   recipients=recipients)
-#     msg.body = 'sended by flask-email'
-#     msg.html = '<b>测试Flask发送邮件<b>'
-#     with app.open_resource(attachfile) as fp:
-#         msg.attach(attachfile, 'run/py', fp.read())
-#     thread = Thread(target=send_async_email, args=[app, msg])
-#     thread.start()
-#     print('Email Send Sucess!')
-
 def s_Mail(to, subject, template, attachfile='send_mail.py', **kwargs):
     '''
     封装函数发送邮件，使用多线程方式

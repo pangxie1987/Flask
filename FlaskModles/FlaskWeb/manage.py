@@ -45,6 +45,22 @@ def test(coverage=False):
         print('HTML version: file://%s/index.html' % covdir)
         COV.erase()
 
+@manager.command
+def deploy():
+    'Run Deployment tasks'
+    from flask_migrate import upgrade
+    from app.models import Role, User
+
+    #把数据库迁移到最新修订版本
+    upgrade()
+
+    #创建用户角色
+    Role.insert_roles()
+
+    #让所有用户都关注此用户
+    User.add_self_follows()
+
+
 manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
 
