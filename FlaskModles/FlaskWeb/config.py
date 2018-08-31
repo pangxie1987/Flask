@@ -29,7 +29,7 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')    #数据库�
 #         'sqlite:///' + os.path.join(basedir, 'app.sqlite')   #数据库存储文件
 class Config:
     CSRF_ENABLED = True # 激活 跨站点请求伪造 保护
-    SECRET_KEY = 'reset' # 加密令牌
+    SECRET_KEY = 'my_key' # 加密令牌
     # 数据库配置   
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False

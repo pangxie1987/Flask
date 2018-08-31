@@ -174,11 +174,15 @@ class User(UserMixin, db.Model):
     @staticmethod
     def reset_password(token, new_password):
         s = Serializer(current_app.config['SECRET_KEY'])
+        print('s=',s)
         try:
             data = s.loads(token.encode('utf-8'))
+            print('data=',data)
         except:
             return False
-        user = User.query.get(data.get('reset'))
+
+        print('data.get=',data.get('reset'))
+        user = User.query.first()
         if user is None:
             return False
         user.password = new_password
