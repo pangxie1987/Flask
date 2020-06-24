@@ -1,0 +1,7 @@
+2018-08-21 15:25:08,694 - ERROR - logger.py - wlog_error - 43 - old user pitt liu is coding
+2018-08-21 15:25:17,924 - ERROR - logger.py - wlog_error - 43 - old user pitt liu is coding
+2018-08-21 15:25:30,217 - WARNING - logger.py - wlog_warning - 37 - new user nemo liu is coding
+2018-08-21 15:26:35,512 - ERROR - logger.py - wlog_error - 45 - old user nemo liu is coding
+2018-08-21 15:29:13,970 - WARNING - logger.py - wlog_warning - 39 - new user flaskr  is coding
+2018-08-22 09:53:12,348 - WARNING - logger.py - wlog_warning - 39 - new user flaskr  is coding
+2018-08-22 09:53:17,638 - WARNING - logger.py - wlog_warning - 39 - new user li lei is coding

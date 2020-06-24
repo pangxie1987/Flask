@@ -1,3 +1,0 @@
-2018-07-27 10:10:12,255 - ERROR - flaskr_logger.py - log - 58 - Error message!
-2018-07-27 10:10:36,918 - WARNING - flaskr_logger.py - log - 57 - warning message!
-2018-07-27 10:10:36,920 - ERROR - flaskr_logger.py - log - 58 - Error message!
